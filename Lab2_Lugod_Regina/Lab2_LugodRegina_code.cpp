@@ -14,7 +14,7 @@ int main(void)
         int a, b;
         cin >> a >> b;
 
-        // get the rest of the string in order to start the next line
+        // skip the rest of the string in order to start the next line
         string s;
         getline(cin, s);
 
