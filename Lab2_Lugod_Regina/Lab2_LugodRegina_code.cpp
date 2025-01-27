@@ -19,5 +19,6 @@ int main(void)
         getline(cin, s);
 
         printf("Agent#%d is at (%d, %d)\n", i + 1, a, b);
+        printf("Says:%s\n", s.c_str());
     }
 }
