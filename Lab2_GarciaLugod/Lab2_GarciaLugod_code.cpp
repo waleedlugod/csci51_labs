@@ -16,10 +16,15 @@ int main(void)
 
         // get the rest of the string
         string s;
-        getline(cin, s);
+        // remove leading whitespace with cin >> ws
+        getline(cin >> ws, s);
+        // remove trailing whitespace
+        size_t w = s.find_last_not_of(" \t\f\v\n\r");
+        if (w != string::npos)
+            s.erase(w + 1);
 
         printf("Agent#%d is at (%d, %d)\n", i + 1, a, b);
-        printf("Says:%s\n", s.c_str());
+        printf("Says: %s\n", s.c_str());
     }
     return 0;
 }
