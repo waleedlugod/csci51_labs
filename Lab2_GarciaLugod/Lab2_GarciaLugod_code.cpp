@@ -21,4 +21,5 @@ int main(void)
         printf("Agent#%d is at (%d, %d)\n", i + 1, a, b);
         printf("Says:%s\n", s.c_str());
     }
+    return 0;
 }
