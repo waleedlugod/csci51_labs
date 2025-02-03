@@ -35,7 +35,11 @@ int main(void)
     while (topNode != nullptr)
     {
         cout << topNode->val << " ";
-        // get next node
-        topNode = topNode->nextNode;
+        // delete current node and get next node
+        IntNode *nextNode = topNode->nextNode;
+        delete topNode;
+        topNode = nullptr;
+        topNode = nextNode;
     }
+    cout << endl;
 }
