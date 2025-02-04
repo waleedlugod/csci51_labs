@@ -6,13 +6,10 @@
 #include "Lab3_GarciaLugod_struct.hpp"
 using namespace std;
 
-int main(void)
+void linkedListDemo()
 {
-    // bug: weird behavior when anything other than int is input (string, float)
-    // might not need fix if specified int is required in readme (??)
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // demonstrate creation and traversal
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // bug: no data validation so weird behavior if anything other than positive int is input
+    // might not need to fix if specified in readme(?)(cope)
 
     // create linked list
     cout << "Length of linked list: ";
@@ -42,4 +39,9 @@ int main(void)
         topNode = nextNode;
     }
     cout << endl;
+}
+
+int main(void)
+{
+    linkedListDemo();
 }
