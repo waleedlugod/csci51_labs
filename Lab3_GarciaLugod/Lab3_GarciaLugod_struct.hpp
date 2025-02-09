@@ -14,3 +14,31 @@ struct IntNode
         this->nextNode = nextNode;
     }
 };
+
+struct IntStack
+{
+    IntNode *head;
+
+    IntStack()
+    {
+        head = nullptr;
+    }
+
+    void push(int val)
+    {
+        head = new IntNode(val, head);
+    }
+
+    int pop()
+    {
+        if (head == nullptr)
+        {
+            return -1;
+        }
+        int val = head->val;
+        IntNode *temp = head;
+        head = head->nextNode;
+        delete temp; // free memory
+        return val;
+    }
+};

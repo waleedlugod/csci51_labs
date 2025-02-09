@@ -41,7 +41,29 @@ void linkedListDemo()
     cout << endl;
 }
 
+void stackDemo()
+{
+    // create stack
+    IntStack stack;
+    stack.push(1);
+    stack.push(2);
+    stack.push(3);
+
+    // traverse stack
+    cout << "Value of nodes from top of stack: ";
+    while (stack.head != nullptr)
+    {
+        cout << stack.pop() << " ";
+    }
+    cout << endl;
+
+    cout << "Attempting to pop from empty stack: ";
+    cout << stack.pop() << endl;
+}
+
 int main(void)
 {
     linkedListDemo();
+    stackDemo();
+    return 0;
 }
