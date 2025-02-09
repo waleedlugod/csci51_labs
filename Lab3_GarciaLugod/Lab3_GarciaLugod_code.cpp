@@ -45,9 +45,16 @@ void stackDemo()
 {
     // create stack
     IntStack stack;
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
+    cout << "Length of stack: ";
+    int len;
+    cin >> len;
+    for (int i = 0; i < len; i++)
+    {
+        int val;
+        cout << "Value of node " << i + 1 << ": ";
+        cin >> val;
+        stack.push(val);
+    }
 
     // traverse stack
     cout << "Value of nodes from top of stack: ";
