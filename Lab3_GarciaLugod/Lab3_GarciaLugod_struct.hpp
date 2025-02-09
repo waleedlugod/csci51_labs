@@ -41,4 +41,12 @@ struct IntStack
         delete temp; // free memory
         return val;
     }
+
+    ~IntStack()
+    {
+        while (head != nullptr)
+        {
+            pop();
+        }
+    }
 };
