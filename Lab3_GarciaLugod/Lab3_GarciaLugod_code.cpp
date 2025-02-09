@@ -8,9 +8,6 @@ using namespace std;
 
 void linkedListDemo()
 {
-    // bug: no data validation so weird behavior if anything other than positive int is input
-    // might not need to fix if specified in readme(?)(cope)
-
     // create linked list
     cout << "Length of linked list: ";
     int len;
@@ -43,34 +40,36 @@ void linkedListDemo()
 
 void stackDemo()
 {
-    // create stack
     IntStack stack;
-    cout << "Length of stack: ";
-    int len;
-    cin >> len;
-    for (int i = 0; i < len; i++)
+    string action;
+    do
     {
-        int val;
-        cout << "Value of node " << i + 1 << ": ";
-        cin >> val;
-        stack.push(val);
-    }
-
-    // traverse stack
-    cout << "Value of nodes from top of stack: ";
-    while (stack.head != nullptr)
-    {
-        cout << stack.pop() << " ";
-    }
-    cout << endl;
-
-    cout << "Attempting to pop from empty stack: ";
-    cout << stack.pop() << endl;
+        cout << "Action (push/pop/stop): ";
+        cin >> action;
+        if (action == "push")
+        {
+            int val;
+            cout << "Value: ";
+            cin >> val;
+            stack.push(val);
+        }
+        else if (action == "pop")
+        {
+            if (stack.head == nullptr)
+            {
+                cout << "Empty stack" << endl;
+            }
+            else
+            {
+                cout << "Popped value: " << stack.pop() << endl;
+            }
+        }
+    } while (action != "stop");
 }
 
 int main(void)
 {
-    linkedListDemo();
+    // linkedListDemo();
     stackDemo();
     return 0;
 }

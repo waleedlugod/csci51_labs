@@ -6,7 +6,7 @@
 struct IntNode
 {
     int val;
-    IntNode *nextNode;
+    IntNode *nextNode = nullptr;
 
     IntNode(int val, IntNode *nextNode)
     {
