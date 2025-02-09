@@ -8,6 +8,7 @@ using namespace std;
 
 void linkedListDemo()
 {
+    cout << "Linked list demo" << endl;
     // create linked list
     cout << "Length of linked list: ";
     int len;
@@ -25,7 +26,8 @@ void linkedListDemo()
 
     // traverse linked list
     IntNode *topNode = prevNode;
-    cout << "Value of nodes from top of linked list: ";
+    if (len > 0)
+        cout << "Value of nodes from top of linked list: ";
     while (topNode != nullptr)
     {
         cout << topNode->val << " ";
@@ -40,6 +42,7 @@ void linkedListDemo()
 
 void stackDemo()
 {
+    cout << "Stack demo" << endl;
     IntStack stack;
     string action;
     do
@@ -64,12 +67,16 @@ void stackDemo()
                 cout << "Popped value: " << stack.pop() << endl;
             }
         }
+        else
+        {
+            cout << "Undefined action" << endl;
+        }
     } while (action != "stop");
 }
 
 int main(void)
 {
-    // linkedListDemo();
+    linkedListDemo();
     stackDemo();
     return 0;
 }
