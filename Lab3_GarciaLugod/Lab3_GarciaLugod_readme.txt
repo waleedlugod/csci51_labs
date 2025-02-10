@@ -14,3 +14,4 @@ Popping an empty stack will print an empty stack error.
 
 Inputting strings, floats, or any invalid inputs to the provided prompts will lead to undefined
 behavior.
+If pop() is called on IntStack when it is empty, it will always return -1.
