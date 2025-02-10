@@ -43,7 +43,7 @@ void linkedListDemo()
 void stackDemo()
 {
     cout << "Stack demo" << endl;
-    IntStack stack;
+    IntStack *stack = new IntStack();
     string action;
     do
     {
@@ -54,17 +54,17 @@ void stackDemo()
             int val;
             cout << "Value: ";
             cin >> val;
-            stack.push(val);
+            stack->push(val);
         }
         else if (action == "pop")
         {
-            if (stack.head == nullptr)
+            if (stack->head == nullptr)
             {
                 cout << "Empty stack" << endl;
             }
             else
             {
-                cout << "Popped value: " << stack.pop() << endl;
+                cout << "Popped value: " << stack->pop() << endl;
             }
         }
         else
@@ -72,6 +72,7 @@ void stackDemo()
             cout << "Undefined action" << endl;
         }
     } while (action != "stop");
+    delete stack;
 }
 
 int main(void)
