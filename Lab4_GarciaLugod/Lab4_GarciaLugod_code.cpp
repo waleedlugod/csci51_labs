@@ -1,3 +1,7 @@
+// I hereby attest to the truth of the following facts:
+// I have not discussed the c++ code in my program with anyone other than my instructor or the teaching assistants assigned to this course.
+// I have not used c++ code obtained from another student, or any other unauthorized source, whether modified or unmodified.
+// If any c++ code or documentation used in my program was obtained from another source, it has been clearly noted with citations in the comments of my program.
 #include <iostream>
 using namespace std;
 
@@ -33,15 +37,15 @@ int main(int argc, char *argv[])
         // Ex: multiplicand = 3, multiplier = 19
         // 19 = 0b10011 = 2**4 + 2**1 + 2**0
         // res = 3<<4 + 3<<1 + 3<<0 = 3*(2**4) + 3*(2**1) + 3*(2**0) = 3*16 + 3*2 + 3*1 = 57
-        // The following checks if the current digit (d) has a 1, and adds the multiplicand
-        // shifted by digit to res if so. d is then shifted to the left.
 
-        int d = 1;
-        while (d <= multiplier)
+        int bindigit = 1; // 0b...001
+        int power = 0;
+        while (bindigit <= multiplier)
         {
-            if (d & multiplier)
-                res += multiplicand << d - 1;
-            d <<= 1;
+            if (bindigit & multiplier)
+                res += multiplicand << power;
+            power++;
+            bindigit <<= 1;
         }
     }
 
