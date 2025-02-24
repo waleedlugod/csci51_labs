@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     int multiplier = atoi(argv[2]);
 
     int res = 0;
-    if (multiplier == 0)
+    if (multiplicand == 0 || multiplier == 0)
     {
         cout << 0 << endl;
         return 0;
