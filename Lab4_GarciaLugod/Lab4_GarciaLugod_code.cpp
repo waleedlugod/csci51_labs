@@ -23,30 +23,19 @@ int main(int argc, char *argv[])
         multiplier = ~multiplier + 1;
     }
 
-    if (multiplier > 31)
+    // Finds the factors of the multiplier as powers of 2, and sums the multiplicand shifted
+    // by the powers.
+    // Ex: multiplicand = 3, multiplier = 19
+    // 19 = 0b10011 = 2**4 + 2**1 + 2**0
+    // res = 3<<4 + 3<<1 + 3<<0 = 3*(2**4) + 3*(2**1) + 3*(2**0) = 3*16 + 3*2 + 3*1 = 57
+    int bindigit = 1; // 0b...001
+    int power = 0;
+    while (bindigit <= multiplier)
     {
-        for (int i = 0; i < multiplier; i++)
-        {
-            res += multiplicand;
-        }
-    }
-    else
-    {
-        // Finds the factors of the multiplier as powers of 2, and sums the multiplicand shifted
-        // by the powers.
-        // Ex: multiplicand = 3, multiplier = 19
-        // 19 = 0b10011 = 2**4 + 2**1 + 2**0
-        // res = 3<<4 + 3<<1 + 3<<0 = 3*(2**4) + 3*(2**1) + 3*(2**0) = 3*16 + 3*2 + 3*1 = 57
-
-        int bindigit = 1; // 0b...001
-        int power = 0;
-        while (bindigit <= multiplier)
-        {
-            if (bindigit & multiplier)
-                res += multiplicand << power;
-            power++;
-            bindigit <<= 1;
-        }
+        if (bindigit & multiplier)
+            res += multiplicand << power;
+        power++;
+        bindigit <<= 1;
     }
 
     cout << res << endl;
