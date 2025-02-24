@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         multiplier = -multiplier;
     }
 
-    // Finds the factors of the multiplier as powers of 2, and sums the multiplicand shifted
+    // Finds the powers of 2 that sum up to the multiplier, and sums the multiplicand shifted
     // by the powers.
     // Ex: multiplicand = 3, multiplier = 19
     // 19 = 0b10011 = 2**4 + 2**1 + 2**0
