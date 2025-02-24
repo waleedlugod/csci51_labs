@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
 
     if (multiplier < 0)
     {
-        multiplicand = ~multiplicand + 1;
-        multiplier = ~multiplier + 1;
+        multiplicand = -multiplicand;
+        multiplier = -multiplier;
     }
 
     // Finds the factors of the multiplier as powers of 2, and sums the multiplicand shifted
