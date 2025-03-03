@@ -3,7 +3,6 @@
 // I have not used c++ code obtained from another student, or any other unauthorized source, whether modified or unmodified.
 // If any c++ code or documentation used in my program was obtained from another source, it has been clearly noted with citations in the comments of my program.
 #include <iostream>
-#include <cstdlib>
 using namespace std;
 
 int main(void)
