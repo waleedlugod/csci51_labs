@@ -69,7 +69,7 @@ main:
 	movq	%rdx, %rdi
 	call	_ZNSirsERi@PLT
 	movq	%rax, %rdx
-	leaq	-44(%rbp), %rax
+	leaq	-36(%rbp), %rax
 	movq	%rax, %rsi
 	movq	%rdx, %rdi
 	call	_ZNSirsERi@PLT
@@ -131,7 +131,7 @@ main:
 	negl	%edx
 	cmovns	%edx, %eax
 	addl	%eax, %ecx
-	movl	-44(%rbp), %eax
+	movl	-36(%rbp), %eax
 	movl	-56(%rbp), %edx
 	subl	%edx, %eax
 	movl	%eax, %edx
