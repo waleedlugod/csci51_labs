@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 {
     if (fork() == 0)
     {
+        execlp("xclock", "myXclock");
     }
     else
     {
