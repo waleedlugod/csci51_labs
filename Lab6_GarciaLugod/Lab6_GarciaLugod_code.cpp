@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
                 cout << "“This program has gone on for far too long. Type Ctrl+C to abort this timer application.”" << endl;
             }
             count = (count + 1) % 3;
-            sleep(1);
+            sleep(10);
         }
     }
 }
