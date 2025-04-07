@@ -59,6 +59,11 @@ int main(int argc, char *argv[])
         return 1;
     }
     N = atoi(argv[1]);
+    if (N <= 0)
+    {
+        cout << "N must be 1 or greater." << endl;
+        return 1;
+    }
     X = strtold(argv[2], NULL);
 
     sums = (long double *)malloc(sizeof(long double) * N);
