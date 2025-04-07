@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     {
         pthread_join(sin_ts[i], NULL);
     }
+    free(sin_ts);
 
     // calculate final sum of the series
     long double sum = 0;
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
 
     printf("Sinl(): %Le\n", sinl(X));
     printf("Sum of pthreads: %Le\n", sum);
+    free(sums);
 
     return 0;
 }
