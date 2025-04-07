@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < N; i++)
     {
         int *index = new int(i);
-        pthread_create(&sin_ts[i], NULL, sin_threads, index);
+        pthread_create(&sin_ts[i], NULL, sin_threads, (void *)index);
     }
 
     for (int i = 0; i < N; i++)
