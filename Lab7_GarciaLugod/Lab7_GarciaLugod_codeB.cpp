@@ -63,6 +63,11 @@ int main(int argc, char *argv[])
 
     sums = (long double *)malloc(sizeof(long double) * N);
     pthread_t *sin_ts = (pthread_t *)malloc(sizeof(pthread_t) * N);
+    if (!sin_ts)
+    {
+        cout << "Too many pthreads." << endl;
+        return 1;
+    }
 
     for (int i = 0; i < N; i++)
     {
