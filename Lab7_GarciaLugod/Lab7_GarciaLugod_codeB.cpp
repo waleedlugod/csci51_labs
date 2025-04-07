@@ -48,14 +48,9 @@ void *sin_threads(void *id)
 
 int main(int argc, char *argv[])
 {
-    if (argc == 1)
+    if (argc != 3)
     {
-        cout << "N not provided" << endl;
-        return 1;
-    }
-    else if (argc == 2)
-    {
-        cout << "X not provided" << endl;
+        cout << "Incorrect number of arguments." << endl;
         return 1;
     }
     N = atoi(argv[1]);
@@ -92,10 +87,10 @@ int main(int argc, char *argv[])
     {
         sum += sums[i];
     }
+    free(sums);
 
     printf("Sinl(): %Le\n", sinl(X));
     printf("Sum of pthreads: %Le\n", sum);
-    free(sums);
 
     return 0;
 }
