@@ -1,6 +1,7 @@
 #include <pthread.h>
 #include <iostream>
 #include <math.h>
+#include <unistd.h>
 using namespace std;
 
 long double *sums; // array of sums computed by the pthreads
@@ -36,10 +37,24 @@ void *sin_threads(void *id)
 
         term += N;
     }
+
+    // Check if threads run in parallel
+    // sleep(1);
+    // printf("%Le\n", sums[*(int *)id]);
 }
 
 int main(int argc, char *argv[])
 {
+    if (argc == 1)
+    {
+        cout << "N not provided" << endl;
+        return 1;
+    }
+    else if (argc == 2)
+    {
+        cout << "X not provided" << endl;
+        return 1;
+    }
     N = atoi(argv[1]);
     X = strtold(argv[2], NULL);
 
@@ -65,7 +80,8 @@ int main(int argc, char *argv[])
         sum += sums[i];
     }
 
-    printf("computed sum %Le\n", sum);
+    printf("Sinl(): %Le\n", sinl(X));
+    printf("Sum of pthreads: %Le\n", sum);
 
     return 0;
 }
