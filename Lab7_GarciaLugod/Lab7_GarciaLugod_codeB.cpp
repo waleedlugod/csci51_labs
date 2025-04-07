@@ -41,6 +41,9 @@ void *sin_threads(void *id)
     // Check if threads run in parallel
     // sleep(1);
     // printf("%Le\n", sums[*(int *)id]);
+
+    delete (int *)id;
+    return NULL;
 }
 
 int main(int argc, char *argv[])
@@ -61,11 +64,10 @@ int main(int argc, char *argv[])
     sums = (long double *)malloc(sizeof(long double) * N);
     pthread_t *sin_ts = (pthread_t *)malloc(sizeof(pthread_t) * N);
 
-    int t_ids[N]; // ids of each pthread. uses array to avoid mutation of each id during loop
     for (int i = 0; i < N; i++)
     {
-        t_ids[i] = i;
-        pthread_create(&sin_ts[i], NULL, sin_threads, (void *)&t_ids[i]);
+        int *index = new int(i);
+        pthread_create(&sin_ts[i], NULL, sin_threads, index);
     }
 
     for (int i = 0; i < N; i++)
