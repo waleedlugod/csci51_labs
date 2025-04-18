@@ -4,9 +4,11 @@
 #include <sys/shm.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <cstring>
 #include <unistd.h>
 using namespace std;
+
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
@@ -17,16 +19,10 @@ int main(int argc, char *argv[])
     }
 
     // -- Text buffer initialization --
-    FILE *file = fopen(argv[1], "r");
-    if (file == NULL)
-    {
-        perror("Could not open file arg");
-        return 1;
-    }
     ifstream ifs(argv[1]);
     stringstream ss;
     ss << ifs.rdbuf();
-    string buffer = ss.str();
+    string text = ss.str();
 
     // Flags for initializing semaphore and shared memory
     int init_flags = IPC_CREAT | 0666;
@@ -64,7 +60,7 @@ int main(int argc, char *argv[])
 
     // -- Shared memory main initialization --
     key_t shm_main_key = 2222;
-    int shm_main_size = atoi(argv[2]); // size for text sent
+    int shm_main_size = atoi(argv[2]);
     int shm_main_id = shmget(shm_main_key, shm_main_size, init_flags);
     if (shm_main_id == -1)
     {
@@ -79,8 +75,12 @@ int main(int argc, char *argv[])
     }
 
     // -- Shared memory state initialization --
+    // I = initial, no text written
+    // W = written to shared memory
+    // R = shared memory is read
+    // F = finished writing all file contents
     key_t shm_state_key = 3333;
-    int shm_state_size = 1; // size for describing state
+    int shm_state_size = 1;
     int shm_state_id = shmget(shm_state_key, shm_state_size, init_flags);
     if (shm_state_id == -1)
     {
@@ -93,14 +93,41 @@ int main(int argc, char *argv[])
         perror("Could not attach to state shared memory");
         return 1;
     }
+    strcpy(shm_state, "I");
 
-    while (true)
+    int text_idx = 0;
+    while (text_idx < text.length())
     {
+        // Enter semaphore
         op_res = semop(sem_id, sem_enter, 2);
-
-        if (op_res != -1)
+        if (op_res == 0)
         {
+            // Get state
+            char *state;
+            strcpy(state, shm_state);
 
+            string substr = text.substr(text_idx, shm_main_size);
+            const char *buffer = substr.c_str();
+
+            if (*state == 'R' || *state == 'I')
+            {
+                // Write to shared memory
+                strcpy(shm_main, buffer);
+                printf("Wrote \"%s\" to shared memory\n", buffer);
+
+                if (text_idx + shm_main_size < text.length())
+                    strcpy(shm_state, "W"); // Written state
+                else
+                {
+                    strcpy(shm_state, "F"); // Done state
+                    printf("Finished writing file contents\n");
+                }
+                text_idx += shm_main_size;
+            }
+            else
+                printf("Waiting for shared memory to be read (text: \"%s\")\n", buffer);
+
+            // Exit semaphore
             op_res = semop(sem_id, sem_exit, 1);
             if (op_res == -1)
             {
@@ -109,8 +136,6 @@ int main(int argc, char *argv[])
             }
             else
             {
-
-                printf("success\n");
                 sleep(1);
             }
         }
@@ -120,6 +145,5 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-    fclose(file);
     return 0;
 }
