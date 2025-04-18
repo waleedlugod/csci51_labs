@@ -2,14 +2,33 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/shm.h>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include <unistd.h>
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+    if (argc < 3)
+    {
+        printf("Not enough arguments\n");
+        return 1;
+    }
+
+    // -- Text buffer initialization --
+    FILE *file = fopen(argv[1], "r");
+    if (file == NULL)
+    {
+        perror("Could not open file arg");
+        return 1;
+    }
+    ifstream ifs(argv[1]);
+    stringstream ss;
+    ss << ifs.rdbuf();
+    string buffer = ss.str();
+
+    // Flags for initializing semaphore and shared memory
     int init_flags = IPC_CREAT | 0666;
 
     // -- Semaphore initialization --
@@ -17,12 +36,11 @@ int main(int argc, char *argv[])
     int sem_id = semget(sem_key, 1, init_flags);
     if (sem_id == -1)
     {
-        perror("Could not initialize semaphore.");
+        perror("Could not initialize semaphore");
         return 1;
     }
 
     // -- Semaphore accessing --
-
     struct sembuf sem_enter[2]; // Struct to enter semaphore
     struct sembuf sem_exit[1];  // Struct to exit semaphore
 
@@ -50,13 +68,13 @@ int main(int argc, char *argv[])
     int shm_main_id = shmget(shm_main_key, shm_main_size, init_flags);
     if (shm_main_id == -1)
     {
-        perror("Could not initialize main shared memory.");
+        perror("Could not initialize main shared memory");
         return 1;
     }
     char *shm_main = (char *)shmat(shm_main_id, NULL, 0);
     if ((int *)shm_main == (int *)-1)
     {
-        perror("Could not attach to main shared memory.");
+        perror("Could not attach to main shared memory");
         return 1;
     }
 
@@ -66,13 +84,13 @@ int main(int argc, char *argv[])
     int shm_state_id = shmget(shm_state_key, shm_state_size, init_flags);
     if (shm_state_id == -1)
     {
-        perror("Could not initialize state shared memory.");
+        perror("Could not initialize state shared memory");
         return 1;
     }
     char *shm_state = (char *)shmat(shm_state_id, NULL, 0);
     if ((int *)shm_state == (int *)-1)
     {
-        perror("Could not attach to state shared memory.");
+        perror("Could not attach to state shared memory");
         return 1;
     }
 
@@ -92,8 +110,8 @@ int main(int argc, char *argv[])
             else
             {
 
-                printf("success2\n");
-                sleep(2);
+                printf("success\n");
+                sleep(1);
             }
         }
         else
@@ -102,5 +120,6 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
+    fclose(file);
     return 0;
 }
