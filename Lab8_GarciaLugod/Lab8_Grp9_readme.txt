@@ -1,0 +1,1 @@
+A program that uses local IPC to copy a text file.
