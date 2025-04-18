@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
             char *state;
             strcpy(state, shm_state);
 
+            // Get buffer text
             string substr = text.substr(text_idx, shm_main_size);
             const char *buffer = substr.c_str();
 
