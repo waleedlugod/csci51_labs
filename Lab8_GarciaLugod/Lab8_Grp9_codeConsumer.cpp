@@ -131,5 +131,8 @@ int main(int argc, char *argv[])
     }
 
     ofs.close();
+    semctl(sem_id, 0, IPC_RMID);
+    shmctl(shm_main_id, IPC_RMID, NULL);
+    shmctl(shm_state_id, IPC_RMID, NULL);
     return 0;
 }
