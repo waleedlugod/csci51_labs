@@ -3,7 +3,7 @@ import random
 MAX_TESTS = 5
 MAX_PROCESSES = 5
 MAX_QUANTUM = 5
-MAX_ARRIVAL = 10
+MAX_ARRIVAL_CHANGE = 10
 MAX_BURST = 10
 MAX_PRIORITY = 10
 
@@ -22,8 +22,9 @@ for case in range(test):
 
     f.write(f"{meta}\n")
 
+    arrival = 0
     for process in range(process_cnt):
-        arrival = random.randint(0, MAX_ARRIVAL)
+        arrival += random.randint(0, MAX_ARRIVAL_CHANGE)
         burst = random.randint(0, MAX_BURST)
         priority = random.randint(-20, MAX_PRIORITY)
 
