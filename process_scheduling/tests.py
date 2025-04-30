@@ -24,7 +24,7 @@ for case in range(test):
 
     for process in range(process_cnt):
         arrival = random.randint(0, MAX_ARRIVAL)
-        burst = random.randint(0, MAX_BURST)
+        burst = random.randint(1, MAX_BURST)
         priority = random.randint(-20, MAX_PRIORITY)
 
         f.write(f"{arrival} {burst} {priority}\n")
