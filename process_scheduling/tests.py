@@ -1,18 +1,30 @@
 import random
 
+MAX_TESTS = 5
+MAX_PROCESSES = 5
+MAX_QUANTUM = 5
+MAX_ARRIVAL = 10
+MAX_BURST = 10
+MAX_PRIORITY = 10
+
 f = open("input.txt", "w")
-test_cases = random.randint(5, 50)
-f.write(f"{test_cases}\n")
-for case in range(test_cases):
-    process_cnt = random.randint(1, 20)
+test = random.randint(1, MAX_TESTS)
+f.write(f"{test}\n")
+
+for case in range(test):
+    process_cnt = random.randint(1, MAX_PROCESSES)
     algorithm = random.choice(["FCFS", "SJF", "SRTF", "P", "RR"])
-    q = random.randint(1, 5)
+    q = random.randint(1, MAX_QUANTUM)
+
     meta = f"{process_cnt} {algorithm}"
     if algorithm == "RR":
         meta += f" {q}"
+
     f.write(f"{meta}\n")
+
     for process in range(process_cnt):
-        arrival = random.randint(0, 20)
-        burst = random.randint(0, 20)
-        priority = random.randint(-20, 20)
+        arrival = random.randint(0, MAX_ARRIVAL)
+        burst = random.randint(0, MAX_BURST)
+        priority = random.randint(-20, MAX_PRIORITY)
+
         f.write(f"{arrival} {burst} {priority}\n")
