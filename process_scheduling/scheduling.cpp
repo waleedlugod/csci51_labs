@@ -14,10 +14,14 @@ void count_sort(int array[][3]);
 string line;
 ifstream input("input.txt");
 ofstream output("output.txt");
+
 int test;
-int process_cnt;
 int q;
+
+int process_cnt;
+int processes[][3];
 int arrival, burst, priority;
+
 int time_elapsed = 0;
 int cpu_time = 0;
 
@@ -29,7 +33,7 @@ int main()
     for (test = 1; test <= tests; test++)
     {
         string algo;
-        string meta[2];
+        string meta[2]; // [process_cnt, q] as string
         time_elapsed = 0;
         cpu_time = 0;
 
@@ -44,7 +48,6 @@ int main()
         }
 
         string process_inputs[3];
-        int processes[process_cnt][3];
         for (int p = 1; p <= process_cnt; p++)
         {
             input >> process_inputs[0] >> process_inputs[1] >> process_inputs[2];
@@ -56,19 +59,19 @@ int main()
             processes[p - 1][2] = priority;
         }
 
-        // sort arrival time
+        // sort by arrival time
         count_sort(processes);
 
-        // if (algo == "FCFS")
-        //     FCFS();
-        // else if (algo == "SJF")
-        //     SJF();
-        // else if (algo == "SRTF")
-        //     SRTF();
-        // else if (algo == "P")
-        //     P();
-        // else if (algo == "RR")
-        //     RR();
+        if (algo == "FCFS")
+            FCFS();
+        else if (algo == "SJF")
+            SJF();
+        else if (algo == "SRTF")
+            SRTF();
+        else if (algo == "P")
+            P();
+        else if (algo == "RR")
+            RR();
     }
 
     input.close();
