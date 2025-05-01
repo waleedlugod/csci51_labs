@@ -17,12 +17,6 @@ int p_i, arrival, burst, priority;
 int time_elapsed = 0;
 int cpu_time = 0;
 
-int cpu_util = 0;
-int throughput = 0;
-int waiting_time = 0;
-int turnaround_time = 0;
-int response_time = 0;
-
 void FCFS(int processes[][att_cnt]);
 void SJF(int processes[][att_cnt]);
 void SRTF(int processes[][att_cnt]);
@@ -31,7 +25,7 @@ void RR(int processes[][att_cnt]);
 
 void print_criteria(int processes[][att_cnt]);
 
-void count_sort(int array[][att_cnt]);
+void count_sort(int array[][att_cnt], int sort_att);
 
 int main()
 {
@@ -67,7 +61,7 @@ int main()
         }
 
         // sort by arrival time
-        count_sort(processes);
+        count_sort(processes, 1);
         // print processes
         // for (int i = 0; i < process_cnt; i++)
         // {
@@ -86,6 +80,8 @@ int main()
         else if (algo == "RR")
             RR(processes);
 
+        // sort by index
+        count_sort(processes, 0);
         print_criteria(processes);
     }
 
@@ -124,11 +120,67 @@ void RR(int processes[][att_cnt]) {
 
 void print_criteria(int processes[][att_cnt])
 {
+    char buffer[50];
+
+    int cpu_util = 0;
+    float throughput = 0;
+    int waiting_time = 0;
+    int turnaround_time = 0;
+    int response_time = 0;
+
+    // cpu utilization
+    cpu_util = (cpu_time * 100) / (float)time_elapsed;
+    sprintf(buffer, "CPU Utilization: %i%%", cpu_util);
+    output << buffer << endl;
+
+    // throughput
+    throughput = process_cnt / (float)time_elapsed;
+    sprintf(buffer, "Throughput: %.2f processes/ns", throughput);
+    output << buffer << endl;
+
+    // waiting time
+    int total_waiting = 0;
+    output << "Waiting Time:" << endl;
+    for (int i = 0; i < process_cnt; i++)
+    {
+        total_waiting += processes[i][4];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][4]);
+        output << buffer << endl;
+    }
+    float avg_waiting = total_waiting / (float)process_cnt;
+    sprintf(buffer, "Average waiting time: %.2fns", avg_waiting);
+    output << buffer << endl;
+
+    // turnaround time
+    int total_turnaround = 0;
+    output << "Turnaround Time:" << endl;
+    for (int i = 0; i < process_cnt; i++)
+    {
+        total_turnaround += processes[i][5];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][5]);
+        output << buffer << endl;
+    }
+    float avg_turnaround = total_turnaround / (float)process_cnt;
+    sprintf(buffer, "Average turnaround time: %.2fns", avg_turnaround);
+    output << buffer << endl;
+
+    // response time
+    int total_response = 0;
+    output << "Response Time:" << endl;
+    for (int i = 0; i < process_cnt; i++)
+    {
+        total_response += processes[i][6];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][6]);
+        output << buffer << endl;
+    }
+    float avg_response = total_response / (float)process_cnt;
+    sprintf(buffer, "Average response time: %.2fns", avg_response);
+    output << buffer << endl;
 }
 
 // https://www.geeksforgeeks.org/counting-sort/
 // sorts based on arrival time
-void count_sort(int inputArray[][att_cnt])
+void count_sort(int inputArray[][att_cnt], int sort_att)
 {
     int N = process_cnt;
 
@@ -136,7 +188,7 @@ void count_sort(int inputArray[][att_cnt])
     int M = 0;
 
     for (int i = 0; i < N; i++)
-        M = max(M, inputArray[i][1]);
+        M = max(M, inputArray[i][sort_att]);
 
     // Initializing countArray[] with 0
     int countArray[M + 1] = {0};
@@ -144,7 +196,7 @@ void count_sort(int inputArray[][att_cnt])
     // Mapping each element of inputArray[] as an index
     // of countArray[] array
     for (int i = 0; i < N; i++)
-        countArray[inputArray[i][1]]++;
+        countArray[inputArray[i][sort_att]]++;
 
     // Calculating prefix sum at every index
     // of array countArray[]
@@ -158,9 +210,9 @@ void count_sort(int inputArray[][att_cnt])
     {
         for (int att = 0; att < att_cnt; att++)
         {
-            outputArray[countArray[inputArray[i][1]] - 1][att] = inputArray[i][att];
+            outputArray[countArray[inputArray[i][sort_att]] - 1][att] = inputArray[i][att];
         }
-        countArray[inputArray[i][1]]--;
+        countArray[inputArray[i][sort_att]]--;
     }
 
     // Copy outputArray to inputArray
