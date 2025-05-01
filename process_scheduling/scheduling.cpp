@@ -11,7 +11,7 @@ int test;
 int q;
 
 int process_cnt;
-const int att_cnt = 7; // index, arrival, burst, priority, waiting, turnaround, response_time
+const int att_cnt = 8; // index, arrival, burst, priority, remaining, waiting, turnaround, response_time
 int p_i, arrival, burst, priority;
 
 int time_elapsed = 0;
@@ -58,10 +58,8 @@ int main()
             processes[p - 1][1] = atoi(process_inputs[0].c_str()); // arrival
             processes[p - 1][2] = atoi(process_inputs[1].c_str()); // burst
             processes[p - 1][3] = atoi(process_inputs[2].c_str()); // priority
+            processes[p - 1][4] = atoi(process_inputs[1].c_str()); // remaining
         }
-
-        // sort by arrival time
-        count_sort(processes, 1);
 
         if (algo == "FCFS")
             FCFS(processes);
@@ -86,6 +84,8 @@ int main()
 
 void FCFS(int processes[][att_cnt])
 {
+    // sort by arrival time
+    count_sort(processes, 1);
     for (int i = 0; i < process_cnt; i++)
     {
         p_i = processes[i][0];
@@ -93,17 +93,27 @@ void FCFS(int processes[][att_cnt])
         burst = processes[i][2];
 
         time_elapsed = max(time_elapsed, arrival);        // 0 if arrived before
-        processes[i][4] = max(0, time_elapsed - arrival); // waiting time
-        processes[i][6] = processes[i][4];                // response time
+        processes[i][5] = max(0, time_elapsed - arrival); // waiting time
+        processes[i][7] = processes[i][5];                // response time
 
         output << time_elapsed << " " << p_i << " " << burst << "X" << endl;
 
         cpu_time += burst;
         time_elapsed += burst;
-        processes[i][5] = time_elapsed - arrival; // turnaround time
+        processes[i][6] = time_elapsed - arrival; // turnaround time
     }
 };
-void SJF(int processes[][att_cnt]) {
+void SJF(int processes[][att_cnt])
+{
+    // sort by arrival time
+    count_sort(processes, 1);
+
+    // print processes
+    for (int i = 0; i < process_cnt; i++)
+    {
+        cout << processes[i][0] << " " << processes[i][1] << " " << processes[i][2] << " " << processes[i][3] << endl;
+    }
+    cout << "--" << endl;
 };
 void SRTF(int processes[][att_cnt]) {
 };
@@ -137,8 +147,8 @@ void print_criteria(int processes[][att_cnt])
     output << "Waiting Time:" << endl;
     for (int i = 0; i < process_cnt; i++)
     {
-        total_waiting += processes[i][4];
-        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][4]);
+        total_waiting += processes[i][5];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][5]);
         output << buffer << endl;
     }
     float avg_waiting = total_waiting / (float)process_cnt;
@@ -150,8 +160,8 @@ void print_criteria(int processes[][att_cnt])
     output << "Turnaround Time:" << endl;
     for (int i = 0; i < process_cnt; i++)
     {
-        total_turnaround += processes[i][5];
-        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][5]);
+        total_turnaround += processes[i][6];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][6]);
         output << buffer << endl;
     }
     float avg_turnaround = total_turnaround / (float)process_cnt;
@@ -163,8 +173,8 @@ void print_criteria(int processes[][att_cnt])
     output << "Response Time:" << endl;
     for (int i = 0; i < process_cnt; i++)
     {
-        total_response += processes[i][6];
-        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][6]);
+        total_response += processes[i][7];
+        sprintf(buffer, "\tProcess %i: %ins", processes[i][0], processes[i][7]);
         output << buffer << endl;
     }
     float avg_response = total_response / (float)process_cnt;
@@ -173,7 +183,7 @@ void print_criteria(int processes[][att_cnt])
 }
 
 // https://www.geeksforgeeks.org/counting-sort/
-// sorts based on arrival time
+// sorts based on sort_att
 void count_sort(int inputArray[][att_cnt], int sort_att)
 {
     int N = process_cnt;
@@ -209,7 +219,7 @@ void count_sort(int inputArray[][att_cnt], int sort_att)
         countArray[inputArray[i][sort_att]]--;
     }
 
-    // Copy outputArray to inputArray
+    // Copy outputArray[] to inputArray[]
     for (int i = N - 1; i >= 0; i--)
     {
         for (int att = 0; att < att_cnt; att++)
