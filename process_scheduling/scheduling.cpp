@@ -58,7 +58,7 @@ int main()
             processes[p - 1][1] = atoi(process_inputs[0].c_str()); // arrival
             processes[p - 1][2] = atoi(process_inputs[1].c_str()); // burst
             processes[p - 1][3] = atoi(process_inputs[2].c_str()); // priority
-            processes[p - 1][4] = atoi(process_inputs[1].c_str()); // remaining
+            processes[p - 1][4] = processes[p - 1][2];             // remaining
         }
 
         if (algo == "FCFS")
@@ -107,13 +107,51 @@ void SJF(int processes[][att_cnt])
 {
     // sort by arrival time
     count_sort(processes, 1);
-
-    // print processes
-    for (int i = 0; i < process_cnt; i++)
+    int completed_processes = 0;
+    while (completed_processes < process_cnt)
     {
-        cout << processes[i][0] << " " << processes[i][1] << " " << processes[i][2] << " " << processes[i][3] << endl;
+        // find shortest job of arrived processes
+        int min_job_idx = -1;
+        int i = 0;
+        while (i < process_cnt && processes[i][1] <= time_elapsed)
+        {
+            // if process has remaining work
+            if (processes[i][4] > 0)
+            {
+                if (min_job_idx == -1)
+                    min_job_idx = i;
+                // update index for shortest job
+                else if (processes[i][2] < processes[min_job_idx][2])
+                {
+                    min_job_idx = i;
+                }
+            }
+            i++;
+        }
+
+        if (min_job_idx != -1)
+        {
+            int i = min_job_idx;
+            p_i = processes[i][0];
+            arrival = processes[i][1];
+            burst = processes[i][2];
+
+            processes[i][4] = 0;                              // clear remaining
+            processes[i][5] = max(0, time_elapsed - arrival); // waiting time
+            processes[i][7] = processes[i][5];                // response time
+
+            output << time_elapsed << " " << p_i << " " << burst << "X" << endl;
+
+            cpu_time += burst;
+            time_elapsed += burst;
+            processes[i][6] = time_elapsed - arrival; // turnaround time
+            completed_processes++;
+        }
+        else
+        {
+            time_elapsed++;
+        }
     }
-    cout << "--" << endl;
 };
 void SRTF(int processes[][att_cnt]) {
 };
