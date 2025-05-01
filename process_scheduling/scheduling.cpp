@@ -12,7 +12,6 @@ int q;
 
 int process_cnt;
 const int att_cnt = 8; // index, arrival, burst, priority, remaining, waiting, turnaround, response_time
-int p_i, arrival, burst, priority;
 
 int time_elapsed = 0;
 int cpu_time = 0;
@@ -88,9 +87,9 @@ void FCFS(int processes[][att_cnt])
     count_sort(processes, 1);
     for (int i = 0; i < process_cnt; i++)
     {
-        p_i = processes[i][0];
-        arrival = processes[i][1];
-        burst = processes[i][2];
+        int p_i = processes[i][0];
+        int arrival = processes[i][1];
+        int burst = processes[i][2];
 
         time_elapsed = max(time_elapsed, arrival);        // 0 if arrived before
         processes[i][5] = max(0, time_elapsed - arrival); // waiting time
@@ -103,6 +102,7 @@ void FCFS(int processes[][att_cnt])
         processes[i][6] = time_elapsed - arrival; // turnaround time
     }
 };
+
 void SJF(int processes[][att_cnt])
 {
     // sort by arrival time
@@ -132,9 +132,9 @@ void SJF(int processes[][att_cnt])
         if (min_job_idx != -1)
         {
             int i = min_job_idx;
-            p_i = processes[i][0];
-            arrival = processes[i][1];
-            burst = processes[i][2];
+            int p_i = processes[i][0];
+            int arrival = processes[i][1];
+            int burst = processes[i][2];
 
             processes[i][4] = 0;                              // clear remaining
             processes[i][5] = max(0, time_elapsed - arrival); // waiting time
@@ -153,10 +153,79 @@ void SJF(int processes[][att_cnt])
         }
     }
 };
-void SRTF(int processes[][att_cnt]) {
+
+void SRTF(int processes[][att_cnt])
+{
+    // sort by arrival time
+    count_sort(processes, 1);
+    int completed_processes = 0;
+    char buffer[10];
+    int min_job_idx = -1;
+    int work_done = 0;
+    while (completed_processes < process_cnt)
+    {
+        // find shortest job of arrived processes
+        int i = 0;
+        int prev_min_job_idx = min_job_idx;
+        while (i < process_cnt && processes[i][1] <= time_elapsed)
+        {
+            // if process has remaining work
+            if (processes[i][4] > 0)
+            {
+                if (min_job_idx == -1)
+                    min_job_idx = i;
+                // update index for shortest remaining
+                else if (processes[i][4] < processes[min_job_idx][4])
+                {
+                    min_job_idx = i;
+                }
+            }
+            i++;
+        }
+
+        // if a running process is interrupted
+        if (prev_min_job_idx != -1 && prev_min_job_idx != min_job_idx)
+        {
+            output << buffer << endl;
+            work_done = 0;
+        }
+
+        if (min_job_idx != -1)
+        {
+            int i = min_job_idx;
+            int p_i = processes[i][0];
+            int arrival = processes[i][1];
+            int burst = processes[i][2];
+            int remaining = processes[i][4];
+
+            if (processes[i][4] == processes[i][2]) // if this is first response
+            {
+                processes[i][7] = max(0, time_elapsed - arrival); // response time
+            }
+
+            work_done++;
+            sprintf(buffer, "%i %i %i", time_elapsed, p_i, work_done);
+            processes[i][4]--; // decrement remaining
+
+            if (processes[i][4] <= 0) // if process is complete
+            {
+                processes[i][6] = time_elapsed - arrival;  // turnaround time
+                processes[i][5] = processes[i][6] - burst; // waiting time
+                output << buffer << "X" << endl;
+                completed_processes++;
+                work_done = 0;
+                min_job_idx = -1;
+            }
+
+            cpu_time++;
+        }
+        time_elapsed++;
+    }
 };
+
 void P(int processes[][att_cnt]) {
 };
+
 void RR(int processes[][att_cnt]) {
 };
 

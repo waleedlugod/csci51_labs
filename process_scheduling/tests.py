@@ -1,6 +1,6 @@
 import random
 
-MAX_TESTS = 5
+MAX_TESTS = 10
 MAX_PROCESSES = 5
 MAX_QUANTUM = 5
 MAX_ARRIVAL = 10
@@ -8,10 +8,10 @@ MAX_BURST = 10
 MAX_PRIORITY = 10
 
 f = open("input.txt", "w")
-test = random.randint(1, MAX_TESTS)
-f.write(f"{test}\n")
+tests = random.randint(1, MAX_TESTS)
+f.write(f"{tests}\n")
 
-for case in range(test):
+for test in range(tests):
     process_cnt = random.randint(1, MAX_PROCESSES)
     algorithm = random.choice(["FCFS", "SJF", "SRTF", "P", "RR"])
     q = random.randint(1, MAX_QUANTUM)
