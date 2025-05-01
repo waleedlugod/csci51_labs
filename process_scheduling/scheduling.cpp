@@ -35,19 +35,19 @@ int main()
     for (test = 1; test <= tests; test++)
     {
         string algo;
-        string meta[2]; // [process_cnt, q] as string
+        string buffer;
         time_elapsed = 0;
         cpu_time = 0;
 
         output << test << endl;
 
-        input >> meta[0] >> algo;
-        process_cnt = atoi(meta[0].c_str());
+        input >> buffer >> algo;
+        process_cnt = atoi(buffer.c_str());
         int processes[process_cnt][att_cnt] = {0};
         if (algo == "RR")
         {
-            input >> meta[1];
-            q = atoi(meta[1].c_str());
+            input >> buffer;
+            q = atoi(buffer.c_str());
         }
 
         string process_inputs[3];
@@ -62,12 +62,6 @@ int main()
 
         // sort by arrival time
         count_sort(processes, 1);
-        // print processes
-        // for (int i = 0; i < process_cnt; i++)
-        // {
-        //     cout << processes[i][0] << " " << processes[i][1] << " " << processes[i][2] << " " << processes[i][3] << endl;
-        // }
-        // cout << "--" << endl;
 
         if (algo == "FCFS")
             FCFS(processes);
