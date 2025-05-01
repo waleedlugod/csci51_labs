@@ -11,7 +11,7 @@ int test;
 int q;
 
 int process_cnt;
-const int att_cnt = 6; // index, arrival, burst, priority, waiting, turnaround
+const int att_cnt = 7; // index, arrival, burst, priority, waiting, turnaround, response_time
 int p_i, arrival, burst, priority;
 
 int time_elapsed = 0;
@@ -28,6 +28,8 @@ void SJF(int processes[][att_cnt]);
 void SRTF(int processes[][att_cnt]);
 void P(int processes[][att_cnt]);
 void RR(int processes[][att_cnt]);
+
+void print_criteria(int processes[][att_cnt]);
 
 void count_sort(int array[][att_cnt]);
 
@@ -83,6 +85,8 @@ int main()
             P(processes);
         else if (algo == "RR")
             RR(processes);
+
+        print_criteria(processes);
     }
 
     input.close();
@@ -92,21 +96,21 @@ int main()
 
 void FCFS(int processes[][att_cnt])
 {
-    // for (int i = 0; i < process_cnt; i++)
-    // {
-    //     p_i = processes[i][0];
-    //     arrival = processes[i][1];
-    //     burst = processes[i][2];
-    //     time_elapsed += max(0, arrival - time_elapsed);   // 0 if arrived before
-    //     processes[i][4] = max(0, time_elapsed - arrival); // waiting time for process
-    //     output << time_elapsed << " " << p_i << " " << burst << "X" << endl;
-    //     cpu_time += burst;
-    //     time_elapsed += burst;
-    // }
-    bool is_done = false;
-    while (!is_done)
+    for (int i = 0; i < process_cnt; i++)
     {
-        time_elapsed++;
+        p_i = processes[i][0];
+        arrival = processes[i][1];
+        burst = processes[i][2];
+
+        time_elapsed = max(time_elapsed, arrival);        // 0 if arrived before
+        processes[i][4] = max(0, time_elapsed - arrival); // waiting time
+        processes[i][6] = processes[i][4];                // response time
+
+        output << time_elapsed << " " << p_i << " " << burst << "X" << endl;
+
+        cpu_time += burst;
+        time_elapsed += burst;
+        processes[i][5] = time_elapsed - arrival; // turnaround time
     }
 };
 void SJF(int processes[][att_cnt]) {
@@ -117,6 +121,10 @@ void P(int processes[][att_cnt]) {
 };
 void RR(int processes[][att_cnt]) {
 };
+
+void print_criteria(int processes[][att_cnt])
+{
+}
 
 // https://www.geeksforgeeks.org/counting-sort/
 // sorts based on arrival time
