@@ -3,14 +3,6 @@
 #include <utility>
 using namespace std;
 
-void FCFS(int processes[][4]);
-void SJF(int processes[][4]);
-void SRTF(int processes[][4]);
-void P(int processes[][4]);
-void RR(int processes[][4]);
-
-void count_sort(int array[][4]);
-
 string line;
 ifstream input("input.txt");
 ofstream output("output.txt");
@@ -19,7 +11,8 @@ int test;
 int q;
 
 int process_cnt;
-int arrival, burst, priority;
+const int att_cnt = 6; // index, arrival, burst, priority, waiting, turnaround
+int p_i, arrival, burst, priority;
 
 int time_elapsed = 0;
 int cpu_time = 0;
@@ -29,6 +22,14 @@ int throughput = 0;
 int waiting_time = 0;
 int turnaround_time = 0;
 int response_time = 0;
+
+void FCFS(int processes[][att_cnt]);
+void SJF(int processes[][att_cnt]);
+void SRTF(int processes[][att_cnt]);
+void P(int processes[][att_cnt]);
+void RR(int processes[][att_cnt]);
+
+void count_sort(int array[][att_cnt]);
 
 int main()
 {
@@ -46,7 +47,7 @@ int main()
 
         input >> meta[0] >> algo;
         process_cnt = atoi(meta[0].c_str());
-        int processes[process_cnt][4];
+        int processes[process_cnt][att_cnt] = {0};
         if (algo == "RR")
         {
             input >> meta[1];
@@ -57,22 +58,20 @@ int main()
         for (int p = 1; p <= process_cnt; p++)
         {
             input >> process_inputs[0] >> process_inputs[1] >> process_inputs[2];
-            arrival = atoi(process_inputs[0].c_str());
-            burst = atoi(process_inputs[1].c_str());
-            priority = atoi(process_inputs[2].c_str());
-            processes[p - 1][0] = p;
-            processes[p - 1][1] = arrival;
-            processes[p - 1][2] = burst;
-            processes[p - 1][3] = priority;
+            processes[p - 1][0] = p;                               // index
+            processes[p - 1][1] = atoi(process_inputs[0].c_str()); // arrival
+            processes[p - 1][2] = atoi(process_inputs[1].c_str()); // burst
+            processes[p - 1][3] = atoi(process_inputs[2].c_str()); // priority
         }
 
         // sort by arrival time
         count_sort(processes);
-        for (int i = 0; i < process_cnt; i++)
-        {
-            cout << processes[i][0] << " " << processes[i][1] << " " << processes[i][2] << " " << processes[i][3] << endl;
-        }
-        cout << "--" << endl;
+        // print processes
+        // for (int i = 0; i < process_cnt; i++)
+        // {
+        //     cout << processes[i][0] << " " << processes[i][1] << " " << processes[i][2] << " " << processes[i][3] << endl;
+        // }
+        // cout << "--" << endl;
 
         if (algo == "FCFS")
             FCFS(processes);
@@ -91,30 +90,37 @@ int main()
     return 0;
 }
 
-void FCFS(int processes[][4])
+void FCFS(int processes[][att_cnt])
 {
-    for (int i = 1; i <= process_cnt; i++)
+    // for (int i = 0; i < process_cnt; i++)
+    // {
+    //     p_i = processes[i][0];
+    //     arrival = processes[i][1];
+    //     burst = processes[i][2];
+    //     time_elapsed += max(0, arrival - time_elapsed);   // 0 if arrived before
+    //     processes[i][4] = max(0, time_elapsed - arrival); // waiting time for process
+    //     output << time_elapsed << " " << p_i << " " << burst << "X" << endl;
+    //     cpu_time += burst;
+    //     time_elapsed += burst;
+    // }
+    bool is_done = false;
+    while (!is_done)
     {
-        int index = processes[i][0];
-        int arrival = processes[i][1];
-        int burst = processes[i][2];
-        int waiting = abs(arrival - time_elapsed);
-        time_elapsed += burst + waiting;
-        cpu_time += burst;
-        output << time_elapsed << " " << index << " " << cpu_time << "X" << endl;
+        time_elapsed++;
     }
 };
-void SJF(int processes[][4]) {
+void SJF(int processes[][att_cnt]) {
 };
-void SRTF(int processes[][4]) {
+void SRTF(int processes[][att_cnt]) {
 };
-void P(int processes[][4]) {
+void P(int processes[][att_cnt]) {
 };
-void RR(int processes[][4]) {
+void RR(int processes[][att_cnt]) {
 };
 
 // https://www.geeksforgeeks.org/counting-sort/
-void count_sort(int inputArray[][4])
+// sorts based on arrival time
+void count_sort(int inputArray[][att_cnt])
 {
     int N = process_cnt;
 
@@ -138,24 +144,23 @@ void count_sort(int inputArray[][4])
         countArray[i] += countArray[i - 1];
 
     // Creating outputArray[] from countArray[] array
-    int outputArray[N][4];
+    int outputArray[N][att_cnt];
 
     for (int i = N - 1; i >= 0; i--)
     {
-        outputArray[countArray[inputArray[i][1]] - 1][0] = inputArray[i][0];
-        outputArray[countArray[inputArray[i][1]] - 1][1] = inputArray[i][1];
-        outputArray[countArray[inputArray[i][1]] - 1][2] = inputArray[i][2];
-        outputArray[countArray[inputArray[i][1]] - 1][3] = inputArray[i][3];
-
+        for (int att = 0; att < att_cnt; att++)
+        {
+            outputArray[countArray[inputArray[i][1]] - 1][att] = inputArray[i][att];
+        }
         countArray[inputArray[i][1]]--;
     }
 
     // Copy outputArray to inputArray
     for (int i = N - 1; i >= 0; i--)
     {
-        inputArray[i][0] = outputArray[i][0];
-        inputArray[i][1] = outputArray[i][1];
-        inputArray[i][2] = outputArray[i][2];
-        inputArray[i][3] = outputArray[i][3];
+        for (int att = 0; att < att_cnt; att++)
+        {
+            inputArray[i][att] = outputArray[i][att];
+        }
     }
 }
