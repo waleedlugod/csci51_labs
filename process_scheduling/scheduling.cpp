@@ -159,11 +159,13 @@ void SRTF(int processes[][att_cnt])
 {
     // sort by arrival time
     count_sort(processes, 1);
+
     int completed_processes = 0;
     char buffer[10];
     int min_job_idx = -1;
     int work_done = 0;
     int block_start = 0;
+
     while (completed_processes < process_cnt)
     {
         // find shortest job of arrived processes
@@ -193,6 +195,7 @@ void SRTF(int processes[][att_cnt])
             block_start = time_elapsed;
         }
 
+        // work on process
         if (min_job_idx != -1)
         {
             int i = min_job_idx;
@@ -217,7 +220,7 @@ void SRTF(int processes[][att_cnt])
                 output << buffer << "X" << endl;
                 completed_processes++;
                 work_done = 0;
-                block_start = time_elapsed;
+                block_start = time_elapsed + 1;
                 min_job_idx = -1;
             }
 
@@ -231,11 +234,13 @@ void P(int processes[][att_cnt])
 {
     // sort by arrival time
     count_sort(processes, 1);
+
     int completed_processes = 0;
     char buffer[10];
     int max_prio_idx = -1;
     int work_done = 0;
     int block_start = 0;
+
     while (completed_processes < process_cnt)
     {
         // find highest priority of arrived processes
@@ -269,6 +274,7 @@ void P(int processes[][att_cnt])
             block_start = time_elapsed;
         }
 
+        // work on process
         if (max_prio_idx != -1)
         {
             int i = max_prio_idx;
@@ -426,7 +432,7 @@ void print_criteria(int processes[][att_cnt])
         output << buffer << endl;
     }
     float avg_waiting = total_waiting / (float)process_cnt;
-    sprintf(buffer, "Average waiting time: %.2fns", avg_waiting);
+    sprintf(buffer, "\tAverage waiting time: %.2fns", avg_waiting);
     output << buffer << endl;
 
     // turnaround time
@@ -439,7 +445,7 @@ void print_criteria(int processes[][att_cnt])
         output << buffer << endl;
     }
     float avg_turnaround = total_turnaround / (float)process_cnt;
-    sprintf(buffer, "Average turnaround time: %.2fns", avg_turnaround);
+    sprintf(buffer, "\tAverage turnaround time: %.2fns", avg_turnaround);
     output << buffer << endl;
 
     // response time
@@ -452,7 +458,7 @@ void print_criteria(int processes[][att_cnt])
         output << buffer << endl;
     }
     float avg_response = total_response / (float)process_cnt;
-    sprintf(buffer, "Average response time: %.2fns", avg_response);
+    sprintf(buffer, "\tAverage response time: %.2fns", avg_response);
     output << buffer << endl;
 }
 
