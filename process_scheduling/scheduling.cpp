@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
-# include <queue>
+#include <queue>
 using namespace std;
 
 string line;
@@ -9,7 +9,7 @@ ifstream input("input.txt");
 ofstream output("output.txt");
 
 int test;
-int q;
+int quantum;
 
 int process_cnt;
 const int att_cnt = 8; // index, arrival, burst, priority, remaining, waiting, turnaround, response_time
@@ -47,7 +47,7 @@ int main()
         if (algo == "RR")
         {
             input >> buffer;
-            q = atoi(buffer.c_str());
+            quantum = atoi(buffer.c_str());
         }
 
         string process_inputs[3];
@@ -67,8 +67,8 @@ int main()
             SJF(processes);
         else if (algo == "SRTF")
             SRTF(processes);
-        else if (algo == "P")
-            P(processes);
+        // else if (algo == "P")
+        //     P(processes);
         else if (algo == "RR")
             RR(processes);
 
@@ -224,26 +224,34 @@ void SRTF(int processes[][att_cnt])
     }
 };
 
-void P(int processes[][att_cnt]) {
+void P(int processes[][att_cnt])
+{
 
     // sort by arrival time first
     count_sort(processes, 1);
     int completed_processes = 0;
     bool finished[process_cnt] = {false};
 
-    while (completed_processes < process_cnt) {
+    while (completed_processes < process_cnt)
+    {
         int idx = -1;
         int highest_priority = 1e9; // 1 x 10^9
 
         // find the highest priority process that has arrived and is not yet completed
-        for (int i = 0; i < process_cnt; i++) {
-            if (!finished[i] && processes[i][1] <= time_elapsed) {
-                if (processes[i][3] < highest_priority) {
+        for (int i = 0; i < process_cnt; i++)
+        {
+            if (!finished[i] && processes[i][1] <= time_elapsed)
+            {
+                if (processes[i][3] < highest_priority)
+                {
                     highest_priority = processes[i][3];
                     idx = i;
-                } else if (processes[i][3] == highest_priority) {
+                }
+                else if (processes[i][3] == highest_priority)
+                {
                     // tie-breaker by arrival time
-                    if (processes[i][1] < processes[idx][1]) {
+                    if (processes[i][1] < processes[idx][1])
+                    {
                         idx = i;
                     }
                 }
@@ -251,7 +259,8 @@ void P(int processes[][att_cnt]) {
         }
 
         // if no process is found, increment time
-        if (idx == -1) {
+        if (idx == -1)
+        {
             time_elapsed++;
             continue;
         }
@@ -278,113 +287,97 @@ void P(int processes[][att_cnt]) {
     }
 };
 
-void RR(int processes[][att_cnt]) {
+void RR(int processes[][att_cnt])
+{
 
     // sort by arrival time
     count_sort(processes, 1);
-    queue<int> ready_queue;
-    int completed_processes = 0;
-    int current_time = 0;
-    int last_arrived = 0;
+    queue<int> p_queue;
+    queue<int> end_queue; // worked processes which are added to end of queue
     bool in_queue[process_cnt] = {false};
-
-    // load initial processes
-    for (int i = 0; i < process_cnt; i++)
-    {
-        if (processes[i][1] <= current_time)
-        {
-            ready_queue.push(i);
-            in_queue[i] = true;
-            last_arrived = i + 1;
-        }
-    }
-
-    while (completed_processes < process_cnt)
-    // sort by arrival time
-    count_sort(processes, 1);
-    queue<int> ready_queue;
     int completed_processes = 0;
-    int current_time = 0;
-    int last_arrived = 0;
-    bool in_queue[process_cnt] = {false};
-
-    // load initial processes
-    for (int i = 0; i < process_cnt; i++)
-    {
-        if (processes[i][1] <= current_time)
-        {
-            ready_queue.push(i);
-            in_queue[i] = true;
-            last_arrived = i + 1;
-        }
-    }
+    char buffer[10];
 
     while (completed_processes < process_cnt)
     {
-        if (ready_queue.empty())
+        // add arrived processes to queue
+        int i = 0;
+        while (i < process_cnt && processes[i][1] <= time_elapsed)
         {
-            current_time++;
-            for (int i = last_arrived; i < process_cnt; i++)
+            if (!in_queue[i])
             {
-                if (processes[i][1] <= current_time)
-                {
-                    ready_queue.push(i);
-                    in_queue[i] = true;
-                    last_arrived = i + 1;
-                }
+                p_queue.push(i);
+                in_queue[i] = true;
             }
-            continue;
+            i++;
         }
 
-        int i = ready_queue.front();
-        ready_queue.pop();
-
-        int p_i = processes[i][0];
-        int arrival = processes[i][1];
-        int burst = processes[i][2];
-        int remaining = processes[i][4];
-
-        // if this is first response
-        if (remaining == burst)
+        // add processes from previous quantum cycle to end of queue
+        while (!end_queue.empty())
         {
-            processes[i][7] = max(0, current_time - arrival); // response
+            int p = end_queue.front();
+            end_queue.pop();
+            p_queue.push(p);
         }
 
-        // if process is completed
-        int run_time = min(q, remaining);
-        output << current_time << " " << p_i << " " << run_time;
-
-        current_time += run_time;
-        cpu_time += run_time;
-        processes[i][4] -= run_time;
-
-        // enqueue new arrivals during this run
-        for (int j = last_arrived; j < process_cnt; j++)
+        int quantum_work = quantum;
+        while (quantum_work > 0 && !p_queue.empty())
         {
-            if (processes[j][1] <= current_time)
+            int p = p_queue.front();
+            p_queue.pop();
+
+            int p_i = processes[p][0];
+            int i_remainder = processes[p][4];
+
+            // if first resonse; remainder == burst
+            if (processes[p][4] == processes[p][2])
             {
-                ready_queue.push(j);
-                in_queue[j] = true;
-                last_arrived = j + 1;
+                // response time = time elapsed - arrival
+                processes[p][7] = time_elapsed - processes[p][1];
+                // update waiting time
+                processes[p][5] = processes[p][7];
             }
-        }
 
-        if (processes[i][4] > 0)
-        {
-            ready_queue.push(i);
+            // remove remainder from quantum
+            quantum_work = max(0, quantum_work - processes[p][4]);
+            // update remainder
+            processes[p][4] = max(0, processes[p][4] - quantum);
+
+            int work_done = i_remainder - processes[p][4];
+            sprintf(buffer, "%i %i %i", time_elapsed, p_i, work_done);
+            output << buffer;
+
+            cpu_time += work_done;
+            time_elapsed += work_done;
+
+            // if process is compelete
+            if (processes[p][4] <= 0)
+            {
+                // turnaround
+                processes[p][6] = time_elapsed - processes[p][1];
+
+                completed_processes++;
+                output << "X";
+            }
+            else
+                end_queue.push(p);
+
             output << endl;
         }
-        else
+
+        // update waiting times
+        queue<int> t_queue = p_queue;
+        while (!t_queue.empty())
         {
-            processes[i][6] = current_time - arrival;             // turnaround
-            processes[i][5] = processes[i][6] - burst;            // waiting
-            output << "X" << endl;
-            completed_processes++;
+            int p = t_queue.front();
+            t_queue.pop();
+            processes[p][5] += quantum;
         }
+
+        // if no work was done
+        if (quantum == quantum_work)
+            time_elapsed += quantum;
     }
-
-    time_elapsed = current_time;
-
 };
 
 void print_criteria(int processes[][att_cnt])
