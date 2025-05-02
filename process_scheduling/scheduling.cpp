@@ -4,7 +4,6 @@
 #include <queue>
 using namespace std;
 
-string line;
 ifstream input("input.txt");
 ofstream output("output.txt");
 
@@ -29,13 +28,13 @@ void count_sort(int array[][att_cnt], int sort_att);
 
 int main()
 {
-    input >> line;
-    int tests = atoi(line.c_str());
+    string buffer;
+    input >> buffer;
+    int tests = atoi(buffer.c_str());
 
     for (test = 1; test <= tests; test++)
     {
         string algo;
-        string buffer;
         time_elapsed = 0;
         cpu_time = 0;
 
