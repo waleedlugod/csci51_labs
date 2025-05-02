@@ -319,6 +319,9 @@ void RR(int processes[][att_cnt])
     bool in_queue[process_cnt] = {false};
     int completed_processes = 0;
     char buffer[10];
+    int work_done = 0;
+    int block_start = 0;
+    int prev_p = -1; // for handling edge case when a block spans multiple quantums
 
     while (completed_processes < process_cnt)
     {
@@ -342,11 +345,23 @@ void RR(int processes[][att_cnt])
             p_queue.push(p);
         }
 
+        // output if new block starts
+        // edge case for when only 1 process in queue since the block spans multiple quantums
+        if (prev_p != -1 && prev_p != p_queue.front())
+        {
+            block_start = time_elapsed;
+            work_done = 0;
+            // if previous proces is incomplete
+            if (processes[prev_p][4] > 0)
+                output << buffer << endl;
+        }
+
         int quantum_work = quantum;
         while (quantum_work > 0 && !p_queue.empty())
         {
             int p = p_queue.front();
             p_queue.pop();
+            prev_p = p;
 
             int p_i = processes[p][0];
             int i_remainder = processes[p][4];
@@ -365,12 +380,12 @@ void RR(int processes[][att_cnt])
             // update remainder
             processes[p][4] = max(0, processes[p][4] - quantum);
 
-            int work_done = i_remainder - processes[p][4];
-            sprintf(buffer, "%i %i %i", time_elapsed, p_i, work_done);
-            output << buffer;
+            int work = i_remainder - processes[p][4];
+            work_done += work;
+            sprintf(buffer, "%i %i %i", block_start, p_i, work_done);
 
-            cpu_time += work_done;
-            time_elapsed += work_done;
+            cpu_time += work;
+            time_elapsed += work;
 
             // if process is compelete
             if (processes[p][4] <= 0)
@@ -379,12 +394,11 @@ void RR(int processes[][att_cnt])
                 processes[p][6] = time_elapsed - processes[p][1];
 
                 completed_processes++;
-                output << "X";
+                output << buffer << "X" << endl;
+                work_done = 0;
             }
             else
                 end_queue.push(p);
-
-            output << endl;
         }
 
         // update waiting times
