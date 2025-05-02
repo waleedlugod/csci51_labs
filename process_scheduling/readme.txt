@@ -7,7 +7,7 @@ Implements CPU scheduling algorithms:
 
 The program reads inputs from input.txt and outputs a Gantt chart and scheduling criteria
 of the inputted processes.
-To run the program an input.txt file must be present in the same directory as the scheduling.cpp file.
+To run the program an input.txt file must be present in the same directory as the program executable file.
 The input.txt must correctly be of the specified format.
 An output.txt file will be created or overwritten which will contain the stated outputs.
 

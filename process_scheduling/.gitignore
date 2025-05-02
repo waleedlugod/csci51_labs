@@ -1,3 +1,5 @@
 *.txt
 .vscode
 !readme.txt
+!input.txt
+!output.txt
