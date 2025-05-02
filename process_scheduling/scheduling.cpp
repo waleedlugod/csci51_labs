@@ -7,7 +7,6 @@ using namespace std;
 ifstream input("input.txt");
 ofstream output("output.txt");
 
-int test;
 int quantum;
 
 int process_cnt;
@@ -32,7 +31,7 @@ int main()
     input >> buffer;
     int tests = atoi(buffer.c_str());
 
-    for (test = 1; test <= tests; test++)
+    for (int test = 1; test <= tests; test++)
     {
         string algo;
         time_elapsed = 0;
@@ -129,6 +128,7 @@ void SJF(int processes[][att_cnt])
             i++;
         }
 
+        // if there is a process to be worked on
         if (min_job_idx != -1)
         {
             int i = min_job_idx;
@@ -194,7 +194,7 @@ void SRTF(int processes[][att_cnt])
             block_start = time_elapsed;
         }
 
-        // work on process
+        // if there is a process to be worked on
         if (min_job_idx != -1)
         {
             int i = min_job_idx;
@@ -310,7 +310,6 @@ void P(int processes[][att_cnt])
 
 void RR(int processes[][att_cnt])
 {
-
     // sort by arrival time
     count_sort(processes, 1);
     queue<int> p_queue;
@@ -350,7 +349,7 @@ void RR(int processes[][att_cnt])
         {
             block_start = time_elapsed;
             work_done = 0;
-            // if previous proces is incomplete
+            // if previous proces is interrupted
             if (processes[prev_p][4] > 0)
                 output << buffer << endl;
         }
@@ -379,12 +378,12 @@ void RR(int processes[][att_cnt])
             // update remainder
             processes[p][4] = max(0, processes[p][4] - quantum);
 
-            int work = i_remainder - processes[p][4];
+            int work = i_remainder - processes[p][4]; // initial remainder - current remainder
             work_done += work;
-            sprintf(buffer, "%i %i %i", block_start, p_i, work_done);
-
             cpu_time += work;
             time_elapsed += work;
+
+            sprintf(buffer, "%i %i %i", block_start, p_i, work_done);
 
             // if process is compelete
             if (processes[p][4] <= 0)
